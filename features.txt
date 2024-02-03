@@ -1,0 +1,26 @@
+**MAIN FEARURES**
+
+1. Welcome Email
+2. Google API
+4. Chat
+5. Separate posts (keep it if it only looks good with UI)
+6. Likes fixage under the post
+
+*****************
+
+Scroll to the same post after liking commenting
+UNIQUE INSTANCES IN SETTINGS FOR USER
+relationship status
+MySQL DB linkage
+status//mood
+new profiles on feed page
+Search page design
+No users found page
+Profile page
+Home
+Google API
+Like feature
+welcome email
+add/remove friends
+chat
+blog

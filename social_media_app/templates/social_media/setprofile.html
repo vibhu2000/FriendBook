@@ -1,0 +1,46 @@
+{% extends 'social_media/base.html' %}
+
+{% block content %}
+
+{% load static %}
+<div class="settings_form">
+    <form action="/savenewprofile/" method="POST" autocomplete="off" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if user.profile.cover.url %}
+            <img src="{{ user.profile.cover.url }}" alt="" class="form_cover">
+            <input type="file" name="cover" id="id_cover" class="inputfile">
+        {% else %}
+            <img src="{% static 'default/cover.jpg' %}" alt="" class="form_cover">
+            <input type="file" name="cover" id="id_cover" class="inputfile">
+        {% endif %}
+        <label for="id_cover" class="change_cover">Change Cover</label>
+        {% if user.profile.pfp.url %}
+            <div class="pfp_show">
+                <img src="{{ user.profile.pfp.url }}" alt="" class="form_pfp">
+                <input type="file" name="pfp" id="id_pfp" class="inputfile">
+                <label for="id_pfp" class="change_pfp">Change Pfp</label>
+            </div>
+        {% else %}
+            <div class="pfp_show">
+                <img src="{% static 'default/profile.jpg' %}" alt="" class="form_pfp">
+                <input type="file" name="pfp" id="id_pfp" class="inputfile">
+                <label for="id_pfp" class="change_pfp">Change Pfp</label>
+            </div>
+        {% endif %}
+        <div class="user_form_info">
+            <div class="name">
+                <input type="text" required name="first_name" class="input_edit" placeholder="First Name" maxlength="30" id="id_first_name">
+                <input type="text" required name="last_name" class="input_edit" placeholder="Last Name" maxlength="150" id="id_last_name">
+            </div>
+            <input type="text" name="username" class="input_edit" value="{{ user.username }}" maxlength="150" required="" id="id_username">
+            <input type="email" name="email" class="input_edit" value="{{ user.email }}" maxlength="254" id="id_email">
+            <textarea name="desc" cols="40" required rows="6" class="input_edit" id="id_desc" placeholder="Enter your profile Desc"></textarea>
+            <div class="work_form">
+                <span>Work:</span>
+                <input type="text" name="occupation" required class="input_edit" maxlength="250" id="id_occupation" placeholder="Enter your work!">
+            </div>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

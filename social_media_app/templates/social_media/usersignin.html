@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>User Sign-up</title>
+    <!--FONT AWESOME CSS-->
+    <link rel="stylesheet" href="{% static 'social_media/fontawesome/fontawesome-all.css' %}">
+    <!--USER STYLE.CSS-->
+    <link rel="stylesheet" href="{% static 'social_media/css/style.css' %}">
+</head>
+<body>
+    <section class="login-signup">
+        <div class="container">
+            <div class="login">
+                <h1>Sign In</h1>
+                <h2 >{{ errorsignin }}</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Sign In</button>
+                </form>
+                <div class="login-with">
+                    <div class="google"><i class="fab fa-google"></i><span> Login with Google</span></div>
+                    <div class="facebook"><i class="fab fa-facebook-f"></i><span> Login with Facebook</span></div>
+                </div>
+                <div class="register-btn">
+                    <a href="{% url 'usersignup' %}" style="color: #fff;"><div class="register-btn-sub">New User? Sign up now!</div></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--FONT AWESOME JS-->
+    <script type="text/javascript" src="{% static 'social_media/fontawesome/fontawesome-all.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends 'social_media/base.html' %}
+
+{% block content %}
+
+{% load static %}
+<div class="settings_form drop_shadow">
+    <form action="{% url 'usersaveprofile' user.profile.id %}" autocomplete="off" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="original" style="display: none;">
+        </div>
+        <img src="{{ user.profile.cover.url }}" alt="" class="form_cover">
+        <input type="file" name="cover" id="id_cover" class="inputfile">
+        <label for="id_cover" class="change_cover">Change Cover</label>
+        <div class="pfp_show">
+            <img src="{{ user.profile.pfp.url }}" alt="" class="form_pfp">
+            <input type="file" name="pfp" id="id_pfp" class="inputfile">
+            <label for="id_pfp" class="change_pfp">Change Pfp</label>
+        </div>
+        <div class="user_form_info">
+            <div class="name">
+                <input type="text" required name="first_name" class="input_edit" value="{{ user.first_name }}" maxlength="30" id="id_first_name">
+                <input type="text" required name="last_name" class="input_edit" value="{{ user.last_name }}" maxlength="150" id="id_last_name">
+            </div>
+            <input type="text" name="username" class="input_edit" value="{{ user.username }}" maxlength="150" required="" id="id_username">
+            <input type="email" name="email" class="input_edit" value="{{ user.email }}" maxlength="254" id="id_email">
+            <textarea name="desc" cols="40" rows="6" required="" class="input_edit" id="id_desc">{{ user.profile.desc }}</textarea>
+            <div class="work_form">
+                <span>Work: </span><input type="text" name="occupation" value="{{ user.profile.occupation }}" class="input_edit" maxlength="250" id="id_occupation" placeholder="Enter your work!">
+            </div>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+<div><h5>test</h5></div>
+{% endblock %}

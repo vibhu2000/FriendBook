@@ -1,0 +1,165 @@
+{% extends 'social_media/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="profile_new-user">
+    <section class="feed_profile_show drop_shadow">
+        <div class="feed_profile_media">
+            <img src="{{ user.profile.pfp.url }}" class="feed_userpfp">
+            <br>
+            <img src="{{ user.profile.cover.url }}" class="feed_usercover">
+        </div>
+        <div class="feed_user_details">
+            <div>Welcome <span style="font-weight: 900;">{{ user.first_name }} {{ user.last_name }}</span></div> 
+            <div>
+                About {{ user.first_name }}: 
+                <br>
+                {{ user.profile.desc|truncatechars:40 }}
+            </div>
+            <div class="UserStatus">
+                <form action="{% url 'status_save' user.status.id %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <!-- {{ Status }} -->
+                    <label for="status">Status:</label>
+                    <input type="text" value="{{ user.status.status }}" name="status" maxlength="300" id="id_status">
+                    <button type="submit" name="UserStatus_pk">Update!</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="new_users drop_shadow">
+        <div class="recenty_joined">Recently Joined:</div>
+        {% for i in User reversed %}
+            <div class="new_user_details_feed">
+                <a href="{% url 'userprofile' user_id=i.id %}">
+                    <img src="{{ i.profile.pfp.url }}" class="new_user_pfp_feed" alt="">
+                    <div class="new_user_name_feed">
+                            {{ i.first_name }} {{ i.last_name }}
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </section>
+</div>
+
+<div class="main_class">
+    <section class="feed blogParentFeed">
+        <form action="{% url 'searchblog' %}" class="SearchBlog" method="GET">
+            <input type="text" name="search" placeholder="Search Blogs">
+            <button type="submit"><i class="fal fa-search"></i></button>
+        </form>
+        <div class="text-center">{{ Error }}</div>
+        <div class="grid-container" style="width: 600px !important">
+            {% for blog in blogs %}
+                <div class="blog-feed drop_shadow">
+                    <div class="sub-blog-feed">
+                        <div style="position: relative;">
+                            <div class="usernameBlogCategory">
+                                <a href="{% url 'userprofile' user_id=blog.blogUser.id %}">
+                                    <img src="{{ blog.blogUser.profile.pfp.url }}" style="height: 25px; width: 25px; border-radius: 100%;">
+                                    <b>{{ blog.blogUser.first_name }}</b>
+                                </a>
+                                <div class="title" style="text-transform: uppercase; color: rgb(83, 83, 83)">
+                                    <b style="text-transform: capitalize; text-align: right; cursor: default;">Category:</b>
+                                    <span style="text-align: right; cursor: default;">{{ blog.blogCategory }}</span>
+                                </div>
+                            </div>
+                            {% if blog.blogUser == request.user %}
+                                <div class="editBlogDelBlog">
+                                    <div class="subeditBlogDelBlog">
+                                        <a class="updateBlog" href="{% url 'blogedit' blog.id %}"><i class="fad fa-edit"></i></a>
+                                        <a class="deleteBlog" href="{% url 'deleteblog' blog.id %}"><i class="fad fa-trash-alt"></i></a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="imageBlog" style="width: 280px; height: 186px; float: bottom; overflow: hidden;">
+                                <img src="{{ blog.blogImgOne.url }}">
+                            </div>
+                        </div>
+                        <div class="BottomBlogClass">
+                                <div class="user-pfp-name user-pfp-name-category-blog">
+                                    <div style="color: rgb(145,145,145); font-size: 14px;"><b>Created:</b> {{ blog.blogCreated }}</div>
+                                    <div style="font-weight: 600; margin: 10px 0;">
+                                        <span style="color: rgb(145,145,145);">Title:</span> <a href="{% url 'blog_detail' blog.id %}" class="blogTitle">{{ blog.blogTitle }}</a>
+                                    </div>
+                                </div>
+                            <div>
+                                <div style="color: rgb(145,145,145); font-size: 14px; height: 62.4px; width: 260px;">{{ blog.blogContent | truncatechars:100 }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<div class="user_friend_chatroom">
+    <div class="chat_room drop_shadow">
+        <span>Chatrooms:</span>
+        <div>
+            <span>Create your own chat room:</span><br>
+            <input id="room-name-input" style="width: 80%; margin-bottom: .1rem;" type="text" size="100"><br>
+            <input id="room-name-submit" type="button" value="Enter">
+        </div>
+        <hr style="margin-top: 1rem;">
+        <div class="server_chat_rooms_main">
+            <div>Server Chat Rooms:</div>
+            <div class="server_chat_rooms">
+                <a href="{% url 'room' room_name='chat_room_1' %}">Chat Room 1 <i class="fal fa-comments-alt"></i></a>
+                <a href="{% url 'room' room_name='chat_room_2' %}">Chat Room 2 <i class="fal fa-comments-alt"></i></a>
+            </div>
+            <div class="server_chat_rooms">
+                <a href="{% url 'room' room_name='chat_room_3' %}">Chat Room 3 <i class="fal fa-comments-alt"></i></a>
+                <a href="{% url 'room' room_name='chat_room_4' %}">Chat Room 4 <i class="fal fa-comments-alt"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="user_friends drop_shadow">
+        <span>Friends:</span>
+        {% for i in friend %}
+        <div>
+            <a href="{% url 'userprofile' i.id %}">
+                <div><img src="{{ i.profile.pfp.url }}" class="new_user_pfp_feed" alt=""></div>
+                <div>{{ i.first_name }} {{ i.last_name }}</div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="hide">
+    <div class="textcopy">
+        <div id="closebtn"><i class="fal fa-times-square"></i></div>
+        <input id="textcopy" type="text" style="text-align: center; padding: 1rem;">
+        <button onclick="copy()">Copy text</button>
+        <div id="copied"></div>
+    </div>
+</div>
+
+<script>
+    function getURL() {
+        var x = window.location.href;
+        document.getElementById("textcopy").value = x;
+        document.getElementById("hide").style.display = "block";
+        document.getElementsByTagName("section").classList.add("opacity");
+    }
+
+    function copy() {
+        var copyText = document.getElementById('textcopy');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+        document.getElementById("copied").innerHTML = "Copied!";
+    }
+
+    document.getElementById("closebtn").addEventListener("click", function () {
+        document.getElementById("hide").style.display = "none";
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'social_media/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="profile_new-user">
+    <section class="feed_profile_show drop_shadow">
+        <div class="feed_profile_media">
+            <img src="{{ user.profile.pfp.url }}" class="feed_userpfp">
+            <br>
+            <img src="{{ user.profile.cover.url }}" class="feed_usercover">
+        </div>
+        <div class="feed_user_details">
+            <div>Welcome <span style="font-weight: 900;">{{ user.first_name }} {{ user.last_name }}</span></div>
+            <div>
+                About {{ user.first_name }}:
+                <br>
+                {{ user.profile.desc|truncatechars:40 }}
+            </div>
+            <div class="UserStatus">
+                <form action="{% url 'status_save' user.status.id %}" method="post" autocomplete="off">
+                    {% csrf_token %}
+                    <!-- {{ Status }} -->
+                    <label for="status">Status:</label>
+                    <input type="text" value="{{ user.status.status }}" name="status" maxlength="300"
+                        id="id_status">
+                    <button type="submit" name="UserStatus_pk">Update!</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="new_users drop_shadow">
+        <div class="recenty_joined">Recently Joined:</div>
+        {% for i in User reversed %}
+        <div class="new_user_details_feed">
+            <a href="{% url 'userprofile' user_id=i.id %}">
+                <img src="{{ i.profile.pfp.url }}" class="new_user_pfp_feed" alt="">
+                <div class="new_user_name_feed">
+                    {{ i.first_name }} {{ i.last_name }}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+
+    <div class="main_class">
+    <section class="feed">
+        <div class="sub-feed drop_shadow" style="padding: 10px">
+            <form action="{% url 'updateblog' blog.id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <img src="{% static 'social_media/images/user-bg.jpg' %}" style="border-radius: 10px;">
+                <div class="" style="font-size: 15px;">
+                    <div class="ImgCategoryBlog">
+                        <div>
+                            <input type="file" accept="image/*" src="{{ blog.blogImgOne.url }}" name="blogImgOne" id="id_blogImgOne" class="inputfile">
+                            <label class="blogLabel blogPhotoLabel" for="id_blogImgOne" style="margin: 0;">Add Photo</label>
+                        </div>
+                        <div>
+                            <label for="id_blogCategory" class="blogLabel" style="">Category</label>
+                            <select class="form-select" required style="margin-left: 14px;" name="blogCategory" id="id_blogCategory">
+                                <option value="{{ category.id }}" selected class="blogCategoryOptions">{{ blog.blogCategory }}</option>
+                                {% for category in Categories %}
+                                  <option value="{{ category.id }}" selected class="blogCategoryOptions">{{ category.categoryTitle }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="blog-submit" style="width: 100%;">
+                        <label class="blogLabel" style="margin-top: 20px;" for="id_blogTitle">Title</label>
+                        <input  value="{{ blog.blogTitle }}" type="text" name="blogTitle" class="form-control placeholderBlog" id="id_blogTitle" placeholder="Title" style="width: 100%;" required>
+                        <label class="blogLabel" for="id_blogContent" style="margin-top: 5px;">Content</label>
+                        <textarea type="text" name="blogContent" class="form-control placeholderBlog" id="id_blogContent" placeholder="Start typing.." style="resize: none; height: 420px;" required>{{ blog.blogContent }}</textarea>
+                        <button id="room-name-submit" class="btn btn-primary blogsubmitbtn" type="submit" style="margin-top: 24px; font-size: 17px;">Upload</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <br>
+    <br>
+
+    </div>
+</div>
+
+<div class="user_friend_chatroom">
+    <div class="chat_room drop_shadow">
+        <span>Chatrooms:</span>
+        <div>
+            <span>Create your own chat room:</span><br>
+            <input id="room-name-input" style="width: 80%; margin-bottom: .1rem;" type="text" size="100"><br>
+            <input id="room-name-submit" type="button" value="Enter">
+        </div>
+        <hr style="margin-top: 1rem;">
+        <div class="server_chat_rooms_main">
+            <div>Server Chat Rooms:</div>
+            <div class="server_chat_rooms">
+                <a href="{% url 'room' room_name='chat_room_1' %}">Chat Room 1 <i
+                        class="fal fa-comments-alt"></i></a>
+                <a href="{% url 'room' room_name='chat_room_2' %}">Chat Room 2 <i
+                        class="fal fa-comments-alt"></i></a>
+            </div>
+            <div class="server_chat_rooms">
+                <a href="{% url 'room' room_name='chat_room_3' %}">Chat Room 3 <i
+                        class="fal fa-comments-alt"></i></a>
+                <a href="{% url 'room' room_name='chat_room_4' %}">Chat Room 4 <i
+                        class="fal fa-comments-alt"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="user_friends drop_shadow">
+        <span>Friends:</span>
+        {% for i in friend %}
+        <div>
+            <a href="{% url 'userprofile' i.id %}">
+                <div><img src="{{ i.profile.pfp.url }}" class="new_user_pfp_feed" alt=""></div>
+                <div>{{ i.first_name }} {{ i.last_name }}</div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="hide">
+    <div class="textcopy">
+        <div id="closebtn"><i class="fal fa-times-square"></i></div>
+        <input id="textcopy" type="text" style="text-align: center; padding: 1rem;">
+        <button onclick="copy()">Copy text</button>
+        <div id="copied"></div>
+    </div>
+</div>
+
+<script>
+    function getURL() {
+        var x = window.location.href;
+        document.getElementById("textcopy").value = x;
+        document.getElementById("hide").style.display = "block";
+        document.getElementsByTagName("section").classList.add("opacity");
+    }
+
+    function copy() {
+        var copyText = document.getElementById('textcopy');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+        document.getElementById("copied").innerHTML = "Copied!";
+    }
+
+    document.getElementById("closebtn").addEventListener("click", function () {
+        document.getElementById("hide").style.display = "none";
+    });
+</script>
+
+<script>
+$(".custom-select").each(function() {
+  var classes = $(this).attr("class"),
+      id      = $(this).attr("id"),
+      name    = $(this).attr("name");
+  var template =  '<div class="' + classes + '">';
+      template += '<span class="custom-select-trigger">' + $(this).attr("placeholder") + '</span>';
+      template += '<div class="custom-options">';
+      $(this).find("option").each(function() {
+        template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + $(this).html() + '</span>';
+      });
+  template += '</div></div>';
+  
+  $(this).wrap('<div class="custom-select-wrapper"></div>');
+  $(this).hide();
+  $(this).after(template);
+});
+$(".custom-option:first-of-type").hover(function() {
+  $(this).parents(".custom-options").addClass("option-hover");
+}, function() {
+  $(this).parents(".custom-options").removeClass("option-hover");
+});
+$(".custom-select-trigger").on("click", function() {
+  $('html').one('click',function() {
+    $(".custom-select").removeClass("opened");
+  });
+  $(this).parents(".custom-select").toggleClass("opened");
+  event.stopPropagation();
+});
+$(".custom-option").on("click", function() {
+  $(this).parents(".custom-select-wrapper").find("select").val($(this).data("value"));
+  $(this).parents(".custom-options").find(".custom-option").removeClass("selection");
+  $(this).addClass("selection");
+  $(this).parents(".custom-select").removeClass("opened");
+  $(this).parents(".custom-select").find(".custom-select-trigger").text($(this).text());
+});
+</script>
+{% endblock %}

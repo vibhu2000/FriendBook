@@ -1,0 +1,187 @@
+{% if user.is_authenticated %}
+
+{% load static %}
+
+
+<head>
+    <title>{{ user.username }}</title>
+    <!--CSS-->
+    <link rel="stylesheet" href="{% static 'social_media/css/feed.css' %}">
+    <!--FONT AWESOME CSS-->
+    <link rel="stylesheet" href="{% static 'social_media/fontawesome/fontawesome-all.css' %}">
+    <!--Profile-->
+    <link type="text/css" rel="stylesheet" href="{% static 'social_media/css/profile.css' %}">
+    <!--Bootstrap-->
+    <link type="text/css" rel="stylesheet" href="{% static 'social_media/css/bootstrap.min.css' %}">
+    <!-- Jquery ui -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+    <nav>
+        <div class="flex-left">
+            <div class="logo">
+                <a href="{% url 'usersfeed' %}">Home <i class="fad fa-home-lg"></i></a>
+            </div>
+            <div class="profile-user">
+                <a href="{% url 'userprofile' user_id=user.id %}" style="display: flex; align-items: center; color: #fff;">
+                    {{ user.username }} <i class="fal fa-user"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="flex-middle">
+            <div class="search-box">
+                <form action="{% url 'usersearch' %}" autocomplete="off" method="GET">
+                    <!-- {% csrf_token %} -->
+                    <input type="text" name="search" id="txtsearch" placeholder="Search">
+                    <button type="submit"><i class="fal fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="flex-right">
+            <div class="message-user">
+                <div class="message" onclick="myFunc()" style="cursor: pointer;">Requests <i class="fad fa-user-friends"></i></div>
+                <div id="show_request_parent">
+                    {% for r in fr  %}
+                        <div class="show_request">
+                            <div class="user_details_req">
+                                <img src="{{ r.from_user.profile.pfp.url }}" style="height: 25px; width: 25px;" alt="">
+                                <div>{{r.from_user.first_name}} {{r.from_user.last_name}}</div>
+                            </div>
+                            <div class="req_acc_ign">
+                                <a href="{% url 'accept' r.id %}">Accept</a>
+                                <a href="{% url 'ignore-request' r.id %}">Ignore</a>
+                            </div>
+                            <hr>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="settings-user">
+                <a href="{% url 'editprofile' %}" style="color: #fff;">Settings <i class="fal fa-user-cog"></i></a>
+            </div>
+            <div class="blogs-user">
+                <div style="color: #fff;">Blogs <i class="far fa-blog"></i></div>
+                <ul class="navListBlog">
+                    <a href="{% url 'blog' %}" style="color: #fff;">Read Blogs <i class="far fa-blog"></i></a>
+                    <a href="{% url 'writeblog' %}" style="color: #fff;">Write Blog <i class="far fa-blog"></i></a>
+                    <a href="{% url 'myBlogs' %}" style="color: #fff;">My Blogs <i class="far fa-blog"></i></a>
+                </ul>
+            </div>
+            <div class="sign-out-user">
+                <form action="{% url 'userslogout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Logout <i class="far fa-sign-out"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>  
+
+    {% block content %}
+    {% endblock %}
+
+
+    <!--FONT AWESOME JS-->
+    <script type="text/javascript" src="{% static 'social_media/fontawesome/fontawesome-all.js' %}"></script>
+    <!--Jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(document).ready(function () {
+                $(".like-submit").submit(function (event) {
+                    event.preventDefault()
+                    const url = $(this).attr('action');
+                    const catid = $(this).attr("data-catid");
+                    $.ajax({
+                            type: "GET",
+                            url: url,
+                            data: {
+                                post_id: catid,
+                            },
+                            success: function(data) {
+                                $('#likes_count' + catid).html(data.count)
+                                if ($('#user-likes' + catid).html()){
+                                    $('#user-likes' + catid).html(data.users + ' ')
+                                    $('#likeBtn' + catid).toggleClass(data.cssClass)
+                                }
+                            }
+                    });
+                });
+        });
+    </script>
+
+    <style>
+    .ui-menu-item-wrapper{
+        text-align: center !important;
+    }
+    </style>
+
+    <script>
+        $( function() {
+            
+            $( "#txtsearch" ).autocomplete({
+                source: '{% url 'search' %}',
+                minLength: 0,
+                position: { my : "center top", at: "center bottom" }
+            });
+        } );
+    </script>
+
+    <footer>
+        <h2>Facebook Clone</h2>
+    </footer>
+
+    <script>
+    function myFunc(){
+        var x = document.getElementById("show_request_parent");
+        if(x.style.display === "none"){
+            x.style.display = "block";
+        } 
+        else{
+            x.style.display = "none";
+        }
+    }
+    </script>
+
+    <script>
+        function getURL() {
+            var x = window.location.href;
+            document.getElementById("textcopy").value = x;
+            var y = document.getElementById("hide").style.display = "block";
+        }
+
+        function copy() {
+            var copyText = document.getElementById('textcopy');
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            document.getElementById("copied").innerHTML = "Copied!";
+        }
+
+        document.getElementById("closebtn").addEventListener("click", function () {
+            document.getElementById("hide").style.display = "none";
+        });
+    </script>
+
+    <script>
+        document.querySelector('#room-name-input').focus();
+        document.querySelector('#room-name-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#room-name-submit').click();
+            }
+        };
+
+        document.querySelector('#room-name-submit').onclick = function(e) {
+            var roomName = document.querySelector('#room-name-input').value;
+            window.location.pathname = '/room/' + roomName + '/';
+        };
+    </script>
+
+    <!--Bootstrap-->
+    <script src="{% static 'social_media/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+{% endif %}

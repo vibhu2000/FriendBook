@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="{% static 'social_media/css/home.css' %}">
+    <title>Welcome</title>
+</head>
+
+<body>
+    <header>
+        <div class="wrapper">
+            <div class="logo">
+                <img src="https://1.bp.blogspot.com/-ata3-fQGA1M/UUxnSdNHqAI/AAAAAAAAAFI/Kb0gJs4YY_k/s1600/4.png" alt="">
+            </div>
+            <ul class="nav-area">
+                <li><a href="{% url 'usersignin' %}">Signin</a></li>
+                <li><a href="{% url 'usersignup' %}">SignUp</a></li>
+            </ul>
+        </div>
+        <div class="welcome-text">
+            <h1>Chatster</h1>
+        </div>
+    </header>
+
+</body>
+</html>

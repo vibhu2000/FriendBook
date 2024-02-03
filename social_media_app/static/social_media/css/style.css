@@ -1,0 +1,227 @@
+/*GLOBAL STYLES*/
+*,
+*::before,
+*::after{
+    padding: 0;
+    margin: 0;
+    box-sizing: inherit;
+}
+
+/*
+color scheme:
+
+Dark: #072F5F
+
+a little light: #1261A0
+
+lighter: #3895D3
+
+lightest: #58CCED
+
+white: #FFF
+*/
+
+html{
+    font-family: 'Nutino', sans-serif;
+    font-size: 10px;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+    color: #fff;
+}
+
+a:active{
+    color: #fff;
+}
+
+ul{
+    list-style: none;
+}
+
+p{
+    font-size: 1.6rem;
+}
+
+img{
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+}
+
+section{
+    padding: 5rem 0;
+}
+
+.container{
+    width: 100%;
+    max-width: 98rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+body{
+    background: url(https://images.pexels.com/photos/340152/pexels-photo-340152.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    overflow: hidden;
+    transition: all .6s;
+}
+
+button{
+    padding: 1rem 5rem;
+    background: #d95df8;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    border-radius: 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all .6s;
+}
+
+button:focus{
+    outline: none;
+}
+
+button:hover{
+    background: #ff7fee;
+}
+
+/*login-signup*/
+.login-signup{
+
+}
+
+.login{
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(.9);
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 50px #0a0a0a;
+    padding: 2rem;
+    width: 330px;
+    transition: all .65s;
+}
+
+.register{
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(.9);
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 50px #0a0a0a;
+    padding: 2rem;
+    width: 330px;
+    text-align: center;
+    transition: all .65s;
+}
+
+.register>h1{
+    font-size: 3rem;
+    text-align: center;
+    color: #1261A0;
+    margin-bottom: 3rem;
+}
+
+.register>h2, .login>h2{
+    font-size: 2rem;
+    text-align: center;
+    color: rgb(201, 24, 24):
+}
+
+.login>h1{
+    font-size: 3rem;
+    text-align: center;
+    color: #1261A0;
+    margin-bottom: 2em;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form>*{
+    margin-bottom: 20px;
+}
+
+input{
+    outline: none;
+    border: none;
+    border-bottom: 1px solid rgb(197, 197, 197);
+    transition: all .6s;
+    padding: 1rem 2rem;
+    background: transparent;
+    width: 100%;
+}
+
+input:focus{
+    outline: none;
+    border-bottom: 1px solid #165baa;
+    background: transparent;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.250);
+}
+
+input::placeholder{
+    transition: all .6s;
+}
+
+input:focus::placeholder{
+    transform: translateY(-30px);
+}
+
+.login-with{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-top: 4rem;
+}
+
+.login-with>*{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem 4rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.144);
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 5px;
+}
+
+.facebook:hover, .facebook:active{
+    color: #fff;
+    background: rgba(66,133,244,1);
+}
+
+.google:hover, .google:active{
+    color: #fff;
+    background: rgba(244,180,0,1);
+   }
+
+.login-btn, .register-btn{
+    margin-top: 3rem;
+    font-size: 1.5em;
+    text-align: center;
+    cursor: pointer;
+    color: #fff;
+    border-radius: 20px;
+    padding: 1rem;
+    background: #165baa;
+    transition: all .5s;
+}
+
+.login-btn:hover, .register-btn:hover{
+    background: #61a1eb;
+}

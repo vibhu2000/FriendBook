@@ -1,0 +1,260 @@
+{% extends 'social_media/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<title>profile</title>
+
+<div class="main-profile-post">
+      <div class="profile drop_shadow">
+            {% if User.profile.cover %}
+            <div class="coverpad">
+                  <img src="{{ User.profile.cover.url }}">
+            </div>
+            {% endif %}
+            {% if User.profile.pfp %}
+            <div class="profilepic">
+                  <img src="{{ User.profile.pfp.url }}" height="140px">
+            </div>
+            {% endif %}
+            <div class="profile-middle">
+                  <div class="details_user">
+                        <div class="profile-username">{{ User.first_name }} {{ User.last_name }}</div>
+                        <div>About {{ User.first_name }}:</div>
+                        <div class="profile-desc">{{ User.profile.desc }}</div>
+                        <div class="more_info">
+                              {% if User.profile.occupation %}
+                              <div class="work">
+                                    Works as a <span>{{ User.profile.occupation }}</span>
+                              </div>
+                              {% endif %}
+                        </div>
+                  </div>
+                  <div class="right_details_user">
+                        <div class="profile_status">
+                              <div>Status: <div style="width: 100%;">{{ User.status.status }}</div>
+                              </div>
+                        </div>
+                        <div>
+                              {% if not user.username == User.username %}
+                              {% if not button_status == True %}
+                              <div><a href="{% url 'add-friend' User.id %}" class="color_link">Add Friend <i
+                                                class="fad fa-user-check"></i></a></div>
+                              <br>
+                              {% else %}
+                              <div><a href="{% url 'remove-friend' User.id %}" class="color_link">Remove Friend <i
+                                                class="fas fa-user-slash"></i></a></div>
+                              {% endif %}
+                              {% if sent_request and not User in request.user.friended.all %}
+                              <div><a href="{% url 'cancel-request' User.id %}" class="color_link cancel_link">Cancel
+                                          Request</a></div>
+                              {% endif %}
+                              {% endif %}
+                        </div>
+                        <div style="margin-top: 1rem;">
+                              Friends:
+                              {% for i in friends.all %}
+                              <div>{{ i }}</div>
+                              {% endfor %}
+                        </div>
+                  </div>
+            </div>
+      </div>
+
+      {% for i in Post %}
+      {% if i.user.username == User.username %}
+      <div class="sub-feed drop_shadow">
+            <div class="user-post">
+                  <div class="pfp-name-delete">
+                        <div class="user-pfp-name">
+                              <a href="{% url 'userprofile' user.id %}">
+                                    <img src="{{ i.user.profile.pfp.url }}"
+                                          style="height: 35px; width: auto; border-radius: 100%;" alt="">
+                                    {{ i.user.first_name }}
+                                    {{ i.user.last_name }}
+                              </a>
+                        </div>
+                        <div>
+                              {% if i.user.username == user.username %}
+                              <div class="delete-btn"><a href="{% url 'userpostdelete' i.id %}"><i
+                                                class="fad fa-trash-alt"></i></a></div>
+                              {% endif %}
+                        </div>
+                  </div>
+                  <div class="upload-user">
+                        {% if i.image %}
+                        <img src="{{ i.image.url }}" alt="">
+                        {% endif %}
+                        {% if i.video %}
+                        <video width='540' controls>
+                              <source src="{{ i.video.url }}" type='video/mp4'>
+                              Your browser does not support the video tag.
+                        </video>
+                        {% endif %}
+                        <div class="caption">{{ i.caption }}</div>
+                  </div>
+                  <div class="btns">
+                        <div class="uploaded-btns">
+                              <form action="{% url 'like_post' %}" class='like-submit' data-catid="{{ i.id }}" method="GET">
+                              <div class="like">
+                                    {% if i.id in Hasliked %}
+                                          <button id="likeBtn{{ i.id }}" class="likeClassBtn colorRed">
+                                          <i class="fas fa-heart"></i>
+                                          </button>
+                                    {% endif %}
+                                    {% if i.id in empty %}
+                                          <button id="likeBtn{{ i.id }}" class="likeClassBtn">
+                                          <i class="fas fa-heart"></i>
+                                          </button>
+                                    {% endif %}
+                                    {% if i.id in Hasnotliked %}
+                                          <button id="likeBtn{{ i.id }}" class="likeClassBtn">
+                                          <i class="fas fa-heart"></i>
+                                          </button>                      
+                                    {% endif %}
+                                    <div class="show_likes">
+                                    <span id="likes_count{{ i.id }}">{{ i.total_likes }}</span>
+                                    <div class="username_liked">
+                                          <div id="user-likes{{ i.id }}" class="user-likes">
+                                          {% for p in i.like.all %}
+                                          {{ p.username }}
+                                          {% endfor %}
+                                          </div>
+                                    </div>
+                                    </div>
+                              </div>
+                              </form>
+                              <div class="share" onclick="getURL()"><i class="fad fa-share"></i> Share</div>
+                        </div>
+                  </div>
+                  <div class="comment_display">
+                        <form action="{% url 'commentpost' i.id %}" method="post" data-catid="{{ i.id }}" autocomplete="off"
+                              class="comment-submit">
+                              {% csrf_token %}
+                              <label for="id_comment" style="font-size: 1.5em;">Comment:</label>
+                              <input type="text" name="comment" maxlength="250" required="" id="id_comment{{ i.id }}">
+                              <button type="submit" class="comment_btn"><i class="fad fa-comment"></i></button>
+                        </form>
+                        <div class="comment_user_display">
+                              {% for y in i.Comment.all %}
+                              <div class="comment_load{{ i.id }} comment_loaded" id="loadedComment{{ i.id }}">
+                                    <div>
+                                          <img src="{{ y.user.profile.pfp.url }}" class="comment_pfp"
+                                                style="height: 20px; width: 20px; border-radius: 100%;" alt="">
+                                          <b class="id_user">{{ y.user }}: </b>
+                                          <span id="id_commented{{ i.id }}">{{ y.comment }}</span>
+                                    </div>
+                                    <div>
+                                          {% if y.user == request.user and not i.user == request.user %}
+                                          <div class="delete-btn"><a href="{% url 'usercommentdelete' y.id %}"><i
+                                                            class="fad fa-trash-alt"></i></a></div>
+                                          {% endif %}
+                                          {% if request.user == i.user %}
+                                          <div class="delete-btn"><a href="{% url 'usercommentdelete' y.id %}"><i class="fad fa-trash-alt"></i></a></div>
+                                          {% endif %}
+                                    </div>
+                              </div>
+                              {% endfor %}
+                        </div>
+                  </div>
+            </div>
+            <hr>
+      </div>
+      {% endif %}
+      {% endfor %}
+      <br>
+      <br>
+</div>
+
+<div class="profile_new-user">
+      <section class="feed_profile_show drop_shadow">
+            <div class="feed_profile_media">
+                  <img src="{{ user.profile.pfp.url }}" class="feed_userpfp">
+                  <br>
+                  <img src="{{ user.profile.cover.url }}" class="feed_usercover">
+            </div>
+            <div class="feed_user_details">
+                  <div>Welcome <span style="font-weight: 900;">{{ user.first_name }} {{ user.last_name }}</span></div>
+                  <div>
+                        About {{ user.first_name }}:
+                        <br>
+                        {{ user.profile.desc|truncatechars:40 }}
+                  </div>
+                  <div class="UserStatus">
+                        <form action="{% url 'status_save' user.status.id %}" method="post" autocomplete="off">
+                              {% csrf_token %}
+                              <!-- {{ Status }} -->
+                              <label for="status">Status:</label>
+                              <input type="text" value="{{ user.status.status }}" name="status" maxlength="300"
+                                    id="id_status">
+                              <button type="submit" name="UserStatus_pk">Update!</button>
+                        </form>
+                  </div>
+            </div>
+      </section>
+
+      <section class="new_users drop_shadow">
+            <div class="recenty_joined">Recently Joined:</div>
+            {% for i in u reversed %}
+            <div class="new_user_details_feed">
+                  <a href="{% url 'userprofile' user_id=i.id %}">
+                        <img src="{{ i.profile.pfp.url }}" class="new_user_pfp_feed" alt="">
+                        <div class="new_user_name_feed">
+                              {{ i.first_name }} {{ i.last_name }}
+                        </div>
+                  </a>
+            </div>
+            {% endfor %}
+      </section>
+</div>
+
+<div class="user_friend_chatroom">
+      <div class="chat_room drop_shadow">
+            <span>Chatrooms:</span>
+            <div>
+                  <span>Create your own chat room:</span><br>
+                  <input id="room-name-input" style="width: 80%; margin-bottom: .1rem;" type="text" size="100"><br>
+                  <input id="room-name-submit" type="button" value="Enter">
+            </div>
+            <hr style="margin-top: 1rem;">
+            <div class="server_chat_rooms_main">
+                  <div>Server Chat Rooms:</div>
+                  <div class="server_chat_rooms">
+                        <a href="{% url 'room' room_name='chat_room_1' %}">Chat Room 1 <i
+                                    class="fal fa-comments-alt"></i></a>
+                        <a href="{% url 'room' room_name='chat_room_2' %}">Chat Room 2 <i
+                                    class="fal fa-comments-alt"></i></a>
+                  </div>
+                  <div class="server_chat_rooms">
+                        <a href="{% url 'room' room_name='chat_room_3' %}">Chat Room 3 <i
+                                    class="fal fa-comments-alt"></i></a>
+                        <a href="{% url 'room' room_name='chat_room_4' %}">Chat Room 4 <i
+                                    class="fal fa-comments-alt"></i></a>
+                  </div>
+            </div>
+      </div>
+
+      <div class="user_friends drop_shadow">
+            <span>Friends:</span>
+            {% for i in friend %}
+            <div>
+                  <a href="{% url 'userprofile' i.id %}">
+                        <div><img src="{{ i.profile.pfp.url }}" class="new_user_pfp_feed" alt=""></div>
+                        <div>{{ i.first_name }} {{ i.last_name }}</div>
+                  </a>
+            </div>
+            {% endfor %}
+      </div>
+</div>
+
+<div id="hide">
+      <div class="textcopy">
+            <div id="closebtn"><i class="fal fa-times-square"></i></div>
+            <input id="textcopy" type="text" style="text-align: center; padding: 1rem;">
+            <button onclick="copy()">Copy text</button>
+            <div id="copied"></div>
+      </div>
+</div>
+
+{% endblock %}
